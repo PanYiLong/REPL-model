@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REPL Options Return Model — Replimune RP1 PDUFA</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f8f9fb;
+  --bg2: #ffffff;
+  --bg3: #f0f2f6;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.13);
+  --text1: #0f1117;
+  --text2: #5a6278;
+  --text3: #9099b0;
+  --accent: #2563eb;
+  --accent-bg: rgba(37,99,235,0.08);
+  --green: #16a34a;
+  --green-bg: rgba(22,163,74,0.08);
+  --red: #dc2626;
+  --red-bg: rgba(220,38,38,0.07);
+  --amber: #b45309;
+  --amber-bg: rgba(180,83,9,0.09);
+  --radius: 8px;
+  --radius-lg: 12px;
+}
+body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text1); min-height: 100vh; padding: 32px 24px; }
+.page { max-width: 900px; margin: 0 auto; }
+.header { margin-bottom: 28px; }
+.ticker-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.ticker { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; }
+.pdufa-badge { font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 20px; background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,184,66,0.25); letter-spacing: 0.03em; }
+h1 { font-size: 26px; font-weight: 600; color: var(--text1); margin-bottom: 5px; letter-spacing: -0.02em; }
+.sub { font-size: 13px; color: var(--text2); }
+.meta-row { display: flex; gap: 24px; margin-top: 16px; flex-wrap: wrap; }
+.meta-item { font-size: 12px; color: var(--text2); }
+.meta-item strong { color: var(--text1); font-weight: 600; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+.section-label { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+/* API Row */
+.api-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 24px; }
+.api-inner { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.api-label { font-size: 12px; color: var(--text2); white-space: nowrap; }
+.api-input { flex: 1; min-width: 200px; max-width: 360px; background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius); padding: 7px 12px; font-size: 12px; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--text1); letter-spacing: 0.03em; outline: none; transition: border-color 0.15s; }
+.api-input:focus { border-color: var(--accent); }
+.fetch-btn { background: var(--accent-bg); border: 1px solid rgba(76,139,245,0.3); color: var(--accent); font-size: 12px; font-weight: 600; padding: 7px 16px; border-radius: var(--radius); cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+.fetch-btn:hover { background: rgba(76,139,245,0.2); }
+.fetch-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.fetch-status { font-size: 11px; color: var(--text3); }
+.fetch-status.ok { color: var(--green); }
+.fetch-status.err { color: var(--red); }
+/* Scenario grid */
+.sc-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 24px; }
+.sc-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 9px 10px; }
+.sc-card.anchor { border-color: rgba(76,139,245,0.5); background: var(--accent-bg); }
+.sc-name { font-size: 9px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+.sc-card.anchor .sc-name { color: var(--accent); }
+.sc-prob { font-size: 20px; font-weight: 600; color: var(--text1); line-height: 1.1; }
+.sc-move { font-size: 10px; color: var(--text3); margin-top: 2px; }
+.sc-card.anchor .sc-move { color: rgba(76,139,245,0.7); }
+/* Controls */
+.controls { display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; }
+.cg { display: flex; flex-direction: column; gap: 5px; }
+.cg label { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
+.pill-row { display: flex; gap: 5px; }
+.pill { font-size: 12px; padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; font-family: inherit; transition: all 0.12s; }
+.pill:hover { border-color: var(--accent); color: var(--text1); }
+.pill.on { background: var(--accent-bg); color: var(--accent); border-color: rgba(76,139,245,0.4); font-weight: 600; }
+select { background: var(--bg2); border: 1px solid var(--border2); color: var(--text1); font-size: 13px; font-family: inherit; padding: 6px 12px; border-radius: var(--radius); cursor: pointer; outline: none; }
+select:focus { border-color: var(--accent); }
+.prem-tag { font-size: 11px; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--text2); background: var(--bg2); }
+.prem-tag.live { border-color: rgba(52,199,123,0.4); color: var(--green); background: var(--green-bg); }
+/* Table */
+.tbl-wrap { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 24px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+thead th { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; padding: 9px 12px; background: var(--bg2); border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; }
+thead th:first-child { text-align: left; }
+tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border); text-align: right; color: var(--text1); }
+tbody td:first-child { text-align: left; font-weight: 500; font-size: 11px; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr.bull td { background: rgba(22,163,74,0.04); }
+tbody tr.bear td { background: rgba(220,38,38,0.04); }
+tfoot td { padding: 9px 12px; text-align: right; font-weight: 600; background: var(--bg2); border-top: 1px solid var(--border2); font-size: 12px; }
+tfoot td:first-child { text-align: left; }
+.pos { color: var(--green); }
+.neg { color: var(--red); }
+.muted { color: var(--text2); }
+.badge-anchor { display: inline-block; font-size: 9px; padding: 1px 6px; border-radius: 8px; margin-left: 5px; background: var(--accent-bg); color: var(--accent); border: 1px solid rgba(76,139,245,0.25); vertical-align: middle; font-weight: 600; }
+/* Chart */
+.chart-section { margin-bottom: 24px; }
+.legend { display: flex; gap: 16px; margin-bottom: 10px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text2); }
+.lswatch { width: 10px; height: 10px; border-radius: 2px; }
+.lswatch.line { width: 22px; height: 2px; border-radius: 0; }
+.chart-wrap { position: relative; width: 100%; height: 220px; }
+/* Note */
+.note { background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--border2); border-radius: var(--radius); padding: 12px 14px; font-size: 12px; color: var(--text2); line-height: 1.65; }
+.note strong { color: var(--text1); font-weight: 600; }
+/* Footer */
+.footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text3); }
+@media (max-width: 600px) {
+  .sc-grid { grid-template-columns: repeat(3, 1fr); }
+  body { padding: 20px 16px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="header">
+  <div class="ticker-row">
+    <span class="ticker">REPL — Replimune Group</span>
+    <span class="pdufa-badge">PDUFA Apr 10</span>
+  </div>
+  <h1>Options Return Model</h1>
+  <div class="sub">RP1 (vusolimogene oderparepvec) BLA — Advanced melanoma after anti-PD-1 failure</div>
+  <div class="meta-row">
+    <div class="meta-item">Spot <strong id="spotDisplay">$8.49</strong></div>
+    <div class="meta-item">PDUFA <strong>April 10, 2026</strong></div>
+    <div class="meta-item">PW EV (stock) <strong>$11.19</strong></div>
+    <div class="meta-item">PW upside <strong>+32%</strong></div>
+    <div class="meta-item">Implied IV <strong>~180%</strong></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="section-label">Tradier API — live options chain</div>
+<div class="api-card">
+  <div class="api-inner">
+    <span class="api-label">API token</span>
+    <input type="password" class="api-input" id="tradierKey" placeholder="Paste your Tradier production token" autocomplete="off" />
+    <button class="fetch-btn" id="fetchBtn" onclick="fetchChain()">↻ Fetch chain</button>
+    <span class="fetch-status" id="fetchStatus"></span>
+  </div>
+</div>
+
+<div class="section-label">Scenario probabilities</div>
+<div class="sc-grid" id="scGrid"></div>
+
+<div class="controls">
+  <div class="cg">
+    <label>Expiry</label>
+    <div class="pill-row" id="expiryPills"></div>
+  </div>
+  <div class="cg">
+    <label>Option type</label>
+    <div class="pill-row" id="typePills"></div>
+  </div>
+  <div class="cg">
+    <label>Strike</label>
+    <select id="strikeSelect"></select>
+  </div>
+  <div class="cg" style="justify-content:flex-end">
+    <label style="opacity:0">.</label>
+    <span class="prem-tag" id="premTag">premium —</span>
+  </div>
+</div>
+
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th style="width:130px;text-align:left">Scenario</th>
+        <th style="width:44px">Prob</th>
+        <th style="width:80px">Target</th>
+        <th style="width:72px">Move</th>
+        <th style="width:90px">Option P&L</th>
+        <th style="width:80px">Return</th>
+        <th style="width:95px">Wtd contrib</th>
+      </tr>
+    </thead>
+    <tbody id="tBody"></tbody>
+    <tfoot id="tFoot"></tfoot>
+  </table>
+</div>
+
+<div class="chart-section">
+  <div class="section-label">PW expected P&L by strike — <span id="chartLabel">calls</span></div>
+  <div class="legend">
+    <div class="legend-item"><div class="lswatch" style="background:#34c77b"></div>Positive EV</div>
+    <div class="legend-item"><div class="lswatch" style="background:#f0624a"></div>Negative EV</div>
+    <div class="legend-item"><div class="lswatch line" style="background:#4c8bf5"></div>Bull scenario ($16 target)</div>
+  </div>
+  <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+</div>
+
+<div class="note" id="bottomNote"></div>
+
+<div class="footer">
+  Scenarios from AP Biotech Catalyst Research. Premiums: Tradier live mid when available, Black-Scholes ~180% IV as fallback.
+  Not investment advice. PDUFA April 10, 2026 — IV crush will be severe post-decision.
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const SPOT = 8.49;
+const STRIKES = [9, 10, 11, 12, 13, 14];
+const SCENARIOS = [
+  { name:"Full approval",    short:"Full",   prob:0.10, target:20.00, move:"+135%", bull:true  },
+  { name:"Accel. approval",  short:"Accel.", prob:0.45, target:16.00, move:"+88%",  bull:true,  anchor:true },
+  { name:"Narrow approval",  short:"Narrow", prob:0.05, target:11.50, move:"+35%",  bull:true  },
+  { name:"2nd CRL w/ path",  short:"CRL+",  prob:0.20, target:5.00,  move:"-41%",  bull:false },
+  { name:"2nd CRL, no path", short:"CRL-",  prob:0.15, target:2.25,  move:"-74%",  bull:false },
+  { name:"CRL + req. RCT",   short:"RCT",   prob:0.05, target:1.50,  move:"-82%",  bull:false },
+];
+const EXPIRIES = [
+  { label:"Apr 10", date:"2026-04-10", dte:4 },
+  { label:"Apr 17", date:"2026-04-17", dte:11 },
+];
+
+let selExp = 0, selType = "call", selStrike = 10;
+let livePrems = {};
+let chart = null;
+
+function normCDF(x) {
+  const t = 1/(1+0.2316419*Math.abs(x));
+  const p = 1-0.3989422*Math.exp(-x*x/2)*(0.319381530*t-0.356563782*t*t+1.781477937*t*t*t-1.821255978*t*t*t*t+1.330274429*t*t*t*t*t);
+  return x>=0?p:1-p;
+}
+function bsCall(S,K,T,r,v){ if(T<=0)return Math.max(S-K,0); const d1=(Math.log(S/K)+(r+.5*v*v)*T)/(v*Math.sqrt(T)),d2=d1-v*Math.sqrt(T); return S*normCDF(d1)-K*Math.exp(-r*T)*normCDF(d2); }
+function bsPut(S,K,T,r,v){ if(T<=0)return Math.max(K-S,0); const d1=(Math.log(S/K)+(r+.5*v*v)*T)/(v*Math.sqrt(T)),d2=d1-v*Math.sqrt(T); return K*Math.exp(-r*T)*normCDF(-d2)-S*normCDF(-d1); }
+
+const IV=1.80, R=0.05;
+function bsPrem(k,dte,type){ const T=dte/365; return type==="call"?bsCall(SPOT,k,T,R,IV):bsPut(SPOT,k,T,R,IV); }
+function getPrem(k,expLabel,type){ const key=`${expLabel}|${k}|${type}`; if(livePrems[key]!==undefined)return{val:livePrems[key],live:true}; return{val:bsPrem(k,EXPIRIES.find(e=>e.label===expLabel).dte,type),live:false}; }
+function payoff(stock,k,type,prem){ return(type==="call"?Math.max(stock-k,0):Math.max(k-stock,0))-prem; }
+
+function render(){
+  const expLabel=EXPIRIES[selExp].label;
+  const{val:prem,live}=getPrem(selStrike,expLabel,selType);
+  const pt=document.getElementById("premTag");
+  pt.textContent=`$${prem.toFixed(2)} premium${live?" (live mid)":" (est.)"}`;
+  pt.className="prem-tag"+(live?" live":"");
+
+  const tb=document.getElementById("tBody"),tf=document.getElementById("tFoot");
+  tb.innerHTML="";
+  let evPnL=0,evContrib=0;
+
+  SCENARIOS.forEach(sc=>{
+    const pnl=payoff(sc.target,selStrike,selType,prem);
+    const ret=prem>0?(pnl/prem)*100:0;
+    const contrib=pnl*sc.prob;
+    evPnL+=pnl*sc.prob; evContrib+=contrib;
+    const tr=document.createElement("tr");
+    tr.className=sc.bull?"bull":"bear";
+    const ab=sc.anchor?'<span class="badge-anchor">anchor</span>':"";
+    const pc=v=>v>=0?"pos":"neg";
+    tr.innerHTML=`<td>${sc.name}${ab}</td><td class="muted">${(sc.prob*100).toFixed(0)}%</td><td>$${sc.target.toFixed(2)}</td><td class="${sc.bull?"pos":"neg"}">${sc.move}</td><td class="${pc(pnl)}">${pnl>=0?"+":""}$${pnl.toFixed(2)}</td><td class="${pc(ret)}">${ret>=0?"+":""}${ret.toFixed(0)}%</td><td class="${pc(contrib)}">${contrib>=0?"+":""}$${contrib.toFixed(2)}</td>`;
+    tb.appendChild(tr);
+  });
+
+  const evRet=prem>0?(evPnL/prem)*100:0;
+  tf.innerHTML=`<tr><td colspan="3">Probability-weighted EV</td><td></td><td class="${evPnL>=0?"pos":"neg"}">${evPnL>=0?"+":""}$${evPnL.toFixed(2)}</td><td class="${evRet>=0?"pos":"neg"}">${evRet>=0?"+":""}${evRet.toFixed(0)}%</td><td class="${evContrib>=0?"pos":"neg"}">${evContrib>=0?"+":""}$${evContrib.toFixed(2)}</td></tr>`;
+
+  const bullPnl=payoff(16,selStrike,selType,prem);
+  const bullRet=prem>0?(bullPnl/prem)*100:0;
+  document.getElementById("bottomNote").innerHTML=`<strong>${expLabel} $${selStrike} ${selType}</strong> — premium $${prem.toFixed(2)} ${live?"(Tradier live mid)":"(Black-Scholes est., ~180% IV)"}. Anchor scenario (accelerated approval, 45% prob, $16 target): <strong class="${bullPnl>=0?"pos":"neg"}">${bullRet>=0?"+":""}${bullRet.toFixed(0)}% return</strong> = ${bullPnl>=0?"+":""}$${bullPnl.toFixed(2)} per share. Probability-weighted EV across all six scenarios: <strong class="${evPnL>=0?"pos":"neg"}">${evRet>=0?"+":""}${evRet.toFixed(0)}%</strong>. IV crush will be severe post-PDUFA regardless of outcome — Apr 10 contracts expire the same day as the FDA decision.`;
+
+  renderChart();
+}
+
+function renderChart(){
+  const expLabel=EXPIRIES[selExp].label;
+  document.getElementById("chartLabel").textContent=`${expLabel} ${selType}s`;
+  const evArr=[],bullArr=[],colors=[];
+  STRIKES.forEach(k=>{
+    const{val:p}=getPrem(k,expLabel,selType);
+    let ev=0; SCENARIOS.forEach(sc=>{ev+=payoff(sc.target,k,selType,p)*sc.prob;});
+    evArr.push(parseFloat(ev.toFixed(2)));
+    bullArr.push(parseFloat(payoff(16,k,selType,p).toFixed(2)));
+    colors.push(ev>=0?"#34c77b":"#f0624a");
+  });
+  if(chart)chart.destroy();
+  chart=new Chart(document.getElementById("barChart"),{
+    type:"bar",
+    data:{labels:STRIKES.map(k=>`$${k}`),datasets:[
+      {label:"PW EV P&L",data:evArr,backgroundColor:colors,borderRadius:4,order:1},
+      {label:"Bull ($16)",data:bullArr,type:"line",borderColor:"#4c8bf5",backgroundColor:"transparent",borderWidth:2,pointRadius:4,pointBackgroundColor:"#4c8bf5",tension:0.3,order:0}
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y>=0?"+":""}$${ctx.parsed.y.toFixed(2)}`}}},
+      scales:{
+        x:{grid:{display:false},ticks:{color:"#5a6278",font:{size:12}}},
+        y:{grid:{color:"rgba(0,0,0,0.06)"},ticks:{color:"#5a6278",font:{size:11},callback:v=>(v>=0?"+":"")+"$"+v.toFixed(2)}}
+      }
+    }
+  });
+}
+
+function buildScGrid(){
+  const g=document.getElementById("scGrid"); g.innerHTML="";
+  SCENARIOS.forEach(sc=>{
+    const d=document.createElement("div");
+    d.className="sc-card"+(sc.anchor?" anchor":"");
+    d.innerHTML=`<div class="sc-name">${sc.short}</div><div class="sc-prob">${(sc.prob*100).toFixed(0)}%</div><div class="sc-move">${sc.move}</div>`;
+    g.appendChild(d);
+  });
+}
+
+function buildExpiry(){
+  const pg=document.getElementById("expiryPills"); pg.innerHTML="";
+  EXPIRIES.forEach((e,i)=>{
+    const b=document.createElement("button");
+    b.className="pill"+(i===selExp?" on":"");
+    b.textContent=e.label;
+    b.onclick=()=>{selExp=i;pg.querySelectorAll(".pill").forEach((p,j)=>p.classList.toggle("on",j===i));render();};
+    pg.appendChild(b);
+  });
+}
+
+function buildType(){
+  const pg=document.getElementById("typePills"); pg.innerHTML="";
+  ["call","put"].forEach(t=>{
+    const b=document.createElement("button");
+    b.className="pill"+(t===selType?" on":"");
+    b.textContent=t;
+    b.onclick=()=>{selType=t;pg.querySelectorAll(".pill").forEach(p=>p.classList.toggle("on",p.textContent===t));render();};
+    pg.appendChild(b);
+  });
+}
+
+function buildStrike(){
+  const s=document.getElementById("strikeSelect"); s.innerHTML="";
+  STRIKES.forEach(k=>{
+    const o=document.createElement("option");
+    o.value=k; o.textContent=`$${k} (${k<=SPOT?"ITM":"OTM"})`;
+    if(k===selStrike)o.selected=true;
+    s.appendChild(o);
+  });
+  s.onchange=()=>{selStrike=parseInt(s.value);render();};
+}
+
+async function fetchChain(){
+  const token=document.getElementById("tradierKey").value.trim();
+  const btn=document.getElementById("fetchBtn");
+  const status=document.getElementById("fetchStatus");
+  if(!token){status.textContent="Enter API token first";status.className="fetch-status err";return;}
+  localStorage.setItem("tradierKey",token);
+  btn.disabled=true; btn.textContent="fetching..."; status.textContent=""; status.className="fetch-status";
+  let updated=0, errors=0;
+  for(const exp of EXPIRIES){
+    try{
+      const url=`https://api.tradier.com/v1/markets/options/chains?symbol=REPL&expiration=${exp.date}&greeks=false`;
+      const r=await fetch(url,{headers:{"Authorization":"Bearer "+token,"Accept":"application/json"}});
+      if(r.status===401)throw new Error("invalid_token");
+      const data=await r.json();
+      const opts=data.options&&data.options.option;
+      if(!opts||!opts.length)throw new Error("no_data");
+      ["call","put"].forEach(type=>{
+        const chain=opts.filter(o=>o.option_type===type);
+        STRIKES.forEach(k=>{
+          let match=null,best=Infinity;
+          chain.forEach(o=>{const d=Math.abs(o.strike-k);if(d<best){best=d;match=o;}});
+          if(match&&best<1.5&&match.bid>0&&match.ask>0){
+            livePrems[`${exp.label}|${k}|${type}`]=parseFloat(((match.bid+match.ask)/2).toFixed(2));
+            updated++;
+          }
+        });
+      });
+    }catch(e){
+      if(e.message==="invalid_token"){status.textContent="Invalid token — check Tradier API Access";status.className="fetch-status err";btn.disabled=false;btn.textContent="↻ Fetch chain";return;}
+      errors++;
+    }
+  }
+  btn.disabled=false; btn.textContent="↻ Fetch chain";
+  const ts=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+  if(updated>0){status.textContent=`${updated} quotes loaded — ${ts}`;status.className="fetch-status ok";}
+  else{status.textContent=errors>0?"Chain unavailable — using BS estimates":"No matching strikes found";status.className="fetch-status err";}
+  render();
+}
+
+window.addEventListener("load",()=>{
+  const saved=localStorage.getItem("tradierKey");
+  if(saved)document.getElementById("tradierKey").value=saved;
+  buildScGrid(); buildExpiry(); buildType(); buildStrike(); render();
+  if(saved)fetchChain();
+});
+</script>
+</body>
+</html>
