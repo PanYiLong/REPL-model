@@ -125,6 +125,13 @@ tfoot td:first-child { text-align: left; }
 .lswatch.line { width: 22px; height: 2px; border-radius: 0; }
 .chart-wrap { position: relative; width: 100%; height: 220px; }
 
+/* Target inputs in table */
+.tgt-input { width: 58px; background: transparent; border: none; border-bottom: 1px dashed rgba(37,99,235,0.35); color: var(--accent); font-size: 12px; font-weight: 600; font-family: inherit; text-align: center; padding: 1px 2px; outline: none; cursor: text; transition: border-color 0.12s, background 0.12s; border-radius: 3px 3px 0 0; }
+.tgt-input:hover { background: var(--accent-bg); border-bottom-color: var(--accent); }
+.tgt-input:focus { background: var(--accent-bg); border-bottom-color: var(--accent); }
+.tgt-hint { font-size: 9px; color: var(--text3); display: block; margin-top: 1px; text-align: center; }
+.tgt-locked { font-size: 12px; color: var(--text1); }
+
 /* Note + footer */
 .note { background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--border2); border-radius: var(--radius); padding: 12px 14px; font-size: 12px; color: var(--text2); line-height: 1.65; margin-bottom: 22px; }
 .note strong { color: var(--text1); font-weight: 600; }
@@ -209,7 +216,7 @@ tfoot td:first-child { text-align: left; }
       <tr>
         <th style="width:130px;text-align:left">Scenario</th>
         <th style="width:42px">Prob</th>
-        <th style="width:76px">Target</th>
+        <th style="width:90px">Target <span style="font-size:9px;font-weight:400;opacity:0.6;text-transform:none;letter-spacing:0">(tap to edit)</span></th>
         <th style="width:66px">Move</th>
         <th style="width:60px">Contracts</th>
         <th style="width:90px">P&L ($)</th>
@@ -264,7 +271,11 @@ let selStrike = 10;
 let investment = 1000;
 let livePrems = {};  // key: "Apr 10|10|call" => midpoint
 let userPrems = {};  // key: same => user-edited override
+let userTargets = {}; // key: scenario index => user-edited target price
 let chart = null;
+
+function getTarget(i){ return userTargets[i]!==undefined ? userTargets[i] : SCENARIOS[i].target; }
+function moveStr(target){ const pct=((target-SPOT)/SPOT)*100; return (pct>=0?"+":"")+pct.toFixed(0)+"%"; }
 
 // --- Black-Scholes ---
 function normCDF(x){const t=1/(1+0.2316419*Math.abs(x));const p=1-0.3989422*Math.exp(-x*x/2)*(0.319381530*t-0.356563782*t*t+1.781477937*t*t*t-1.821255978*t*t*t*t+1.330274429*t*t*t*t*t);return x>=0?p:1-p;}
@@ -402,8 +413,9 @@ function render(){
   tb.innerHTML="";
   let evPnL=0, evContrib=0;
 
-  SCENARIOS.forEach(sc=>{
-    const pnlPerShare=payoff(sc.target,selStrike,selType,prem);
+  SCENARIOS.forEach((sc,i)=>{
+    const target=getTarget(i);
+    const pnlPerShare=payoff(target,selStrike,selType,prem);
     const totalPnL=pnlPerShare*100*contracts;
     const ret=prem>0?(pnlPerShare/prem)*100:0;
     const contrib=totalPnL*sc.prob;
@@ -413,37 +425,72 @@ function render(){
     const ab=sc.anchor?'<span class="badge-anchor">anchor</span>':"";
     const pc=v=>v>=0?"pos":"neg";
     const fmtDollar=v=>(v>=0?"+$":"-$")+Math.abs(v).toLocaleString(undefined,{maximumFractionDigits:0});
-    tr.innerHTML=`<td>${sc.name}${ab}</td><td class="muted">${(sc.prob*100).toFixed(0)}%</td><td>$${sc.target.toFixed(2)}</td><td class="${sc.bull?"pos":"neg"}">${sc.move}</td><td class="muted">${contracts}</td><td class="${pc(totalPnL)}">${fmtDollar(totalPnL)}</td><td class="${pc(ret)}">${ret>=0?"+":""}${ret.toFixed(0)}%</td><td class="${pc(contrib)}">${fmtDollar(contrib)}</td>`;
+    const move=moveStr(target);
+    const moveColor=sc.bull?"pos":"neg";
+
+    // Target cell: editable input for bull scenarios, locked text for bear
+    let targetCell;
+    if(sc.bull){
+      const isEdited=userTargets[i]!==undefined;
+      targetCell=`<td style="text-align:right"><input class="tgt-input" id="tgt_${i}" type="number" step="0.50" min="0.50" max="100" value="${target.toFixed(2)}" /><span class="tgt-hint">${isEdited?"edited":"default"}</span></td>`;
+    } else {
+      targetCell=`<td style="text-align:right"><span class="tgt-locked">$${target.toFixed(2)}</span></td>`;
+    }
+
+    tr.innerHTML=`<td>${sc.name}${ab}</td><td class="muted">${(sc.prob*100).toFixed(0)}%</td>${targetCell}<td class="${moveColor}">${move}</td><td class="muted">${contracts}</td><td class="${pc(totalPnL)}">${fmtDollar(totalPnL)}</td><td class="${pc(ret)}">${ret>=0?"+":""}${ret.toFixed(0)}%</td><td class="${pc(contrib)}">${fmtDollar(contrib)}</td>`;
     tb.appendChild(tr);
+  });
+
+  // Wire up target inputs after they're in the DOM
+  SCENARIOS.forEach((sc,i)=>{
+    if(!sc.bull) return;
+    const el=document.getElementById(`tgt_${i}`);
+    if(!el) return;
+    el.addEventListener("change",()=>{
+      const v=parseFloat(el.value);
+      if(!isNaN(v) && v>0){
+        userTargets[i]=parseFloat(v.toFixed(2));
+        render();
+      }
+    });
+    el.addEventListener("dblclick",()=>{
+      // Double-click resets to default
+      delete userTargets[i];
+      render();
+    });
   });
 
   const evRet=prem>0?(evPnL/(investment)||0)*100:0;
   const fmtDollar=v=>(v>=0?"+$":"-$")+Math.abs(v).toLocaleString(undefined,{maximumFractionDigits:0});
   tf.innerHTML=`<tr><td colspan="4">Probability-weighted EV — ${contracts} contract${contracts!==1?"s":""} @ $${prem.toFixed(2)} ${src==="live"?"(live)":src==="user"?"(edited)":"(est.)"}</td><td class="muted">${contracts}</td><td class="${evPnL>=0?"pos":"neg"}">${fmtDollar(evPnL)}</td><td class="${evRet>=0?"pos":"neg"}">${evRet>=0?"+":""}${evRet.toFixed(0)}%</td><td class="${evContrib>=0?"pos":"neg"}">${fmtDollar(evContrib)}</td></tr>`;
 
-  // Bottom note
-  const bullPnl=payoff(16,selStrike,selType,prem)*100*contracts;
-  const bullRet=prem>0?((payoff(16,selStrike,selType,prem)/prem)*100):0;
+  // Bottom note — anchor scenario is index 1 (accel. approval)
+  const anchorTarget=getTarget(1);
+  const bullPnl=payoff(anchorTarget,selStrike,selType,prem)*100*contracts;
+  const bullRet=prem>0?((payoff(anchorTarget,selStrike,selType,prem)/prem)*100):0;
   document.getElementById("bottomNote").innerHTML=
-    `<strong>${expLabel} $${selStrike} ${selType.toUpperCase()}</strong> — $${investment.toLocaleString()} buys <strong>${contracts} contract${contracts!==1?"s":""}</strong> at $${prem.toFixed(2)} premium ${src==="live"?"(Tradier live mid)":src==="user"?"(manually edited)":"(Black-Scholes est., ~180% IV)"}. `+
-    `Anchor scenario (accel. approval, 45% prob, $16 target): <strong class="${bullPnl>=0?"pos":"neg"}">${bullRet>=0?"+":""}${bullRet.toFixed(0)}% return = ${fmtDollar(bullPnl)}</strong>. `+
-    `Probability-weighted EV on full position: <strong class="${evPnL>=0?"pos":"neg"}">${fmtDollar(evPnL)}</strong>. `+
-    `IV crush post-PDUFA will be severe — sell within 1–2 sessions of the decision.`;
+    `<strong>${expLabel} $${selStrike} ${selType.toUpperCase()}</strong> — $${investment.toLocaleString()} buys <strong>${contracts} contract${contracts!==1?"s":""}</strong> at $${prem.toFixed(2)} ${src==="live"?"(Tradier live mid)":src==="user"?"(manually edited)":"(BS est., ~180% IV)"}. `+
+    `Anchor scenario (accel. approval, 45% prob, $${anchorTarget.toFixed(2)} target): <strong class="${bullPnl>=0?"pos":"neg"}">${bullRet>=0?"+":""}${bullRet.toFixed(0)}% return = ${fmtDollar(bullPnl)}</strong>. `+
+    `Probability-weighted EV: <strong class="${evPnL>=0?"pos":"neg"}">${fmtDollar(evPnL)}</strong>. `+
+    `Double-click any target to reset to default. IV crush post-PDUFA will be severe — sell within 1–2 sessions.`;
 
   renderChart();
 }
 
 function renderChart(){
   const expLabel=EXPIRIES[selExp].label;
+  const anchorTarget=getTarget(1); // accel. approval index
   document.getElementById("chartLabel").textContent=`${selType}s · ${expLabel}`;
+  document.querySelector(".legend-item:last-child div + *") && 
+    (document.querySelectorAll(".legend-item")[2].lastChild.textContent=`Bull scenario ($${anchorTarget.toFixed(0)} target)`);
   const evArr=[],bullArr=[],colors=[];
   STRIKES.forEach(k=>{
     const{val:p}=getPrem(k,expLabel,selType);
     const cts=Math.floor(investment/(p*100));
     let ev=0;
-    SCENARIOS.forEach(sc=>{ev+=payoff(sc.target,k,selType,p)*100*cts*sc.prob;});
+    SCENARIOS.forEach((sc,i)=>{ev+=payoff(getTarget(i),k,selType,p)*100*cts*sc.prob;});
     evArr.push(Math.round(ev));
-    bullArr.push(Math.round(payoff(16,k,selType,p)*100*cts));
+    bullArr.push(Math.round(payoff(anchorTarget,k,selType,p)*100*cts));
     colors.push(ev>=0?"#16a34a":"#dc2626");
   });
   if(chart)chart.destroy();
@@ -451,7 +498,7 @@ function renderChart(){
     type:"bar",
     data:{labels:STRIKES.map(k=>`$${k}`),datasets:[
       {label:"PW EV P&L ($)",data:evArr,backgroundColor:colors,borderRadius:4,order:1},
-      {label:"Bull ($16)",data:bullArr,type:"line",borderColor:"#2563eb",backgroundColor:"transparent",borderWidth:2,pointRadius:4,pointBackgroundColor:"#2563eb",tension:0.3,order:0}
+      {label:`Bull ($${anchorTarget.toFixed(0)})`,data:bullArr,type:"line",borderColor:"#2563eb",backgroundColor:"transparent",borderWidth:2,pointRadius:4,pointBackgroundColor:"#2563eb",tension:0.3,order:0}
     ]},
     options:{
       responsive:true,maintainAspectRatio:false,
