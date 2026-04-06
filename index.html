@@ -7,9 +7,9 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #f8f9fb;
+  --bg: #f4f6f9;
   --bg2: #ffffff;
-  --bg3: #f0f2f6;
+  --bg3: #eef0f5;
   --border: rgba(0,0,0,0.08);
   --border2: rgba(0,0,0,0.13);
   --text1: #0f1117;
@@ -17,8 +17,10 @@
   --text3: #9099b0;
   --accent: #2563eb;
   --accent-bg: rgba(37,99,235,0.08);
+  --accent-border: rgba(37,99,235,0.35);
   --green: #16a34a;
   --green-bg: rgba(22,163,74,0.08);
+  --green-border: rgba(22,163,74,0.3);
   --red: #dc2626;
   --red-bg: rgba(220,38,38,0.07);
   --amber: #b45309;
@@ -27,89 +29,119 @@
   --radius-lg: 12px;
 }
 body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text1); min-height: 100vh; padding: 32px 24px; }
-.page { max-width: 900px; margin: 0 auto; }
-.header { margin-bottom: 28px; }
+.page { max-width: 920px; margin: 0 auto; }
+
+/* Header */
 .ticker-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
 .ticker { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; }
-.pdufa-badge { font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 20px; background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,184,66,0.25); letter-spacing: 0.03em; }
+.pdufa-badge { font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 20px; background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(180,83,9,0.25); }
 h1 { font-size: 26px; font-weight: 600; color: var(--text1); margin-bottom: 5px; letter-spacing: -0.02em; }
 .sub { font-size: 13px; color: var(--text2); }
-.meta-row { display: flex; gap: 24px; margin-top: 16px; flex-wrap: wrap; }
+.meta-row { display: flex; gap: 24px; margin-top: 14px; flex-wrap: wrap; }
 .meta-item { font-size: 12px; color: var(--text2); }
 .meta-item strong { color: var(--text1); font-weight: 600; }
-.divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
 .section-label { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
-/* API Row */
-.api-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 24px; }
+
+/* API card */
+.api-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 13px 16px; margin-bottom: 22px; }
 .api-inner { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .api-label { font-size: 12px; color: var(--text2); white-space: nowrap; }
-.api-input { flex: 1; min-width: 200px; max-width: 360px; background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius); padding: 7px 12px; font-size: 12px; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--text1); letter-spacing: 0.03em; outline: none; transition: border-color 0.15s; }
+.api-input { flex: 1; min-width: 200px; max-width: 340px; background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius); padding: 7px 12px; font-size: 12px; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--text1); outline: none; transition: border-color 0.15s; }
 .api-input:focus { border-color: var(--accent); }
-.fetch-btn { background: var(--accent-bg); border: 1px solid rgba(76,139,245,0.3); color: var(--accent); font-size: 12px; font-weight: 600; padding: 7px 16px; border-radius: var(--radius); cursor: pointer; white-space: nowrap; transition: all 0.15s; }
-.fetch-btn:hover { background: rgba(76,139,245,0.2); }
+.fetch-btn { background: var(--accent-bg); border: 1px solid var(--accent-border); color: var(--accent); font-size: 12px; font-weight: 600; padding: 7px 16px; border-radius: var(--radius); cursor: pointer; white-space: nowrap; font-family: inherit; transition: all 0.12s; }
+.fetch-btn:hover { background: rgba(37,99,235,0.14); }
 .fetch-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .fetch-status { font-size: 11px; color: var(--text3); }
-.fetch-status.ok { color: var(--green); }
+.fetch-status.ok { color: var(--green); font-weight: 600; }
 .fetch-status.err { color: var(--red); }
+
 /* Scenario grid */
-.sc-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 24px; }
+.sc-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 22px; }
 .sc-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 9px 10px; }
-.sc-card.anchor { border-color: rgba(76,139,245,0.5); background: var(--accent-bg); }
+.sc-card.anchor { border-color: var(--accent-border); background: var(--accent-bg); }
 .sc-name { font-size: 9px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
 .sc-card.anchor .sc-name { color: var(--accent); }
 .sc-prob { font-size: 20px; font-weight: 600; color: var(--text1); line-height: 1.1; }
 .sc-move { font-size: 10px; color: var(--text3); margin-top: 2px; }
-.sc-card.anchor .sc-move { color: rgba(76,139,245,0.7); }
-/* Controls */
-.controls { display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; }
-.cg { display: flex; flex-direction: column; gap: 5px; }
-.cg label { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
-.pill-row { display: flex; gap: 5px; }
-.pill { font-size: 12px; padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; font-family: inherit; transition: all 0.12s; }
-.pill:hover { border-color: var(--accent); color: var(--text1); }
-.pill.on { background: var(--accent-bg); color: var(--accent); border-color: rgba(76,139,245,0.4); font-weight: 600; }
-select { background: var(--bg2); border: 1px solid var(--border2); color: var(--text1); font-size: 13px; font-family: inherit; padding: 6px 12px; border-radius: var(--radius); cursor: pointer; outline: none; }
-select:focus { border-color: var(--accent); }
-.prem-tag { font-size: 11px; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--text2); background: var(--bg2); }
-.prem-tag.live { border-color: rgba(52,199,123,0.4); color: var(--green); background: var(--green-bg); }
-/* Table */
-.tbl-wrap { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 24px; }
+.sc-card.anchor .sc-move { color: rgba(37,99,235,0.65); }
+
+/* Premium editor */
+.ped-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 22px; }
+.ped-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.ped-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
+.live-badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.ped-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.ped-col-title { font-size: 11px; font-weight: 600; color: var(--text2); margin-bottom: 10px; }
+.ped-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.ped-label { font-size: 12px; color: var(--text2); width: 52px; flex-shrink: 0; }
+.ped-input { width: 80px; background: var(--accent-bg); border: 1px solid var(--accent-border); border-radius: var(--radius); padding: 5px 10px; font-size: 13px; font-weight: 600; color: var(--accent); text-align: center; font-family: inherit; outline: none; transition: border-color 0.12s; }
+.ped-input:focus { border-color: var(--accent); background: rgba(37,99,235,0.12); }
+.ped-input.updated { animation: flashGreen 0.6s ease; }
+@keyframes flashGreen { 0%,100%{border-color:var(--accent-border)} 40%{border-color:var(--green);background:var(--green-bg);color:var(--green)} }
+
+/* Investment slider */
+.inv-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 22px; }
+.inv-top { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+.inv-amount-block { display: flex; flex-direction: column; gap: 2px; }
+.inv-label-small { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
+.inv-amount { font-size: 28px; font-weight: 700; color: var(--text1); letter-spacing: -0.02em; }
+.inv-expiry-block { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+.inv-expiry-label { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
+.inv-expiry-pills { display: flex; gap: 5px; }
+.inv-pill { font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 6px; border: 1px solid var(--border2); background: var(--bg3); color: var(--text2); cursor: pointer; font-family: inherit; transition: all 0.12s; }
+.inv-pill.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+.slider-wrap { position: relative; margin-bottom: 12px; }
+input[type=range] { width: 100%; height: 4px; -webkit-appearance: none; appearance: none; background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--pct,5%), var(--bg3) var(--pct,5%), var(--bg3) 100%); border-radius: 2px; outline: none; cursor: pointer; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(37,99,235,0.3); cursor: pointer; }
+input[type=range]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--accent); border: 2px solid #fff; cursor: pointer; }
+.quick-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.qbtn { font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 6px; border: 1px solid var(--border2); background: var(--bg3); color: var(--text2); cursor: pointer; font-family: inherit; transition: all 0.12s; }
+.qbtn:hover { border-color: var(--accent); color: var(--accent); }
+.qbtn.on { background: var(--accent-bg); color: var(--accent); border-color: var(--accent-border); }
+
+/* Results table */
+.tbl-wrap { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 22px; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
-thead th { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; padding: 9px 12px; background: var(--bg2); border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; }
+thead th { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; padding: 9px 11px; background: var(--bg2); border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; }
 thead th:first-child { text-align: left; }
-tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border); text-align: right; color: var(--text1); }
+tbody td { padding: 8px 11px; border-bottom: 1px solid var(--border); text-align: right; color: var(--text1); }
 tbody td:first-child { text-align: left; font-weight: 500; font-size: 11px; }
 tbody tr:last-child td { border-bottom: none; }
 tbody tr.bull td { background: rgba(22,163,74,0.04); }
 tbody tr.bear td { background: rgba(220,38,38,0.04); }
-tfoot td { padding: 9px 12px; text-align: right; font-weight: 600; background: var(--bg2); border-top: 1px solid var(--border2); font-size: 12px; }
+tfoot td { padding: 9px 11px; text-align: right; font-weight: 600; background: var(--bg3); border-top: 1px solid var(--border2); font-size: 12px; }
 tfoot td:first-child { text-align: left; }
 .pos { color: var(--green); }
 .neg { color: var(--red); }
 .muted { color: var(--text2); }
-.badge-anchor { display: inline-block; font-size: 9px; padding: 1px 6px; border-radius: 8px; margin-left: 5px; background: var(--accent-bg); color: var(--accent); border: 1px solid rgba(76,139,245,0.25); vertical-align: middle; font-weight: 600; }
+.badge-anchor { display: inline-block; font-size: 9px; padding: 1px 6px; border-radius: 8px; margin-left: 5px; background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent-border); vertical-align: middle; font-weight: 600; }
+
 /* Chart */
-.chart-section { margin-bottom: 24px; }
+.chart-section { margin-bottom: 22px; }
 .legend { display: flex; gap: 16px; margin-bottom: 10px; flex-wrap: wrap; }
 .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text2); }
-.lswatch { width: 10px; height: 10px; border-radius: 2px; }
+.lswatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink:0; }
 .lswatch.line { width: 22px; height: 2px; border-radius: 0; }
 .chart-wrap { position: relative; width: 100%; height: 220px; }
-/* Note */
-.note { background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--border2); border-radius: var(--radius); padding: 12px 14px; font-size: 12px; color: var(--text2); line-height: 1.65; }
+
+/* Note + footer */
+.note { background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--border2); border-radius: var(--radius); padding: 12px 14px; font-size: 12px; color: var(--text2); line-height: 1.65; margin-bottom: 22px; }
 .note strong { color: var(--text1); font-weight: 600; }
-/* Footer */
-.footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text3); }
+.footer { padding-top: 14px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text3); }
+
 @media (max-width: 600px) {
   .sc-grid { grid-template-columns: repeat(3, 1fr); }
-  body { padding: 20px 16px; }
+  .ped-cols { grid-template-columns: 1fr; gap: 16px; }
+  body { padding: 20px 14px; }
 }
 </style>
 </head>
 <body>
 <div class="page">
 
-<div class="header">
+<!-- Header -->
+<div style="margin-bottom:26px">
   <div class="ticker-row">
     <span class="ticker">REPL — Replimune Group</span>
     <span class="pdufa-badge">PDUFA Apr 10</span>
@@ -117,7 +149,7 @@ tfoot td:first-child { text-align: left; }
   <h1>Options Return Model</h1>
   <div class="sub">RP1 (vusolimogene oderparepvec) BLA — Advanced melanoma after anti-PD-1 failure</div>
   <div class="meta-row">
-    <div class="meta-item">Spot <strong id="spotDisplay">$8.49</strong></div>
+    <div class="meta-item">Spot <strong>$8.49</strong></div>
     <div class="meta-item">PDUFA <strong>April 10, 2026</strong></div>
     <div class="meta-item">PW EV (stock) <strong>$11.19</strong></div>
     <div class="meta-item">PW upside <strong>+32%</strong></div>
@@ -127,49 +159,62 @@ tfoot td:first-child { text-align: left; }
 
 <hr class="divider">
 
+<!-- Tradier API -->
 <div class="section-label">Tradier API — live options chain</div>
 <div class="api-card">
   <div class="api-inner">
     <span class="api-label">API token</span>
     <input type="password" class="api-input" id="tradierKey" placeholder="Paste your Tradier production token" autocomplete="off" />
-    <button class="fetch-btn" id="fetchBtn" onclick="fetchChain()">↻ Fetch chain</button>
+    <button class="fetch-btn" id="fetchBtn" onclick="fetchChain()">↻ Fetch Live Chain</button>
     <span class="fetch-status" id="fetchStatus"></span>
   </div>
 </div>
 
+<!-- Scenario grid -->
 <div class="section-label">Scenario probabilities</div>
 <div class="sc-grid" id="scGrid"></div>
 
-<div class="controls">
-  <div class="cg">
-    <label>Expiry</label>
-    <div class="pill-row" id="expiryPills"></div>
+<!-- Premium editor -->
+<div class="section-label">Edit option premiums</div>
+<div class="ped-card">
+  <div class="ped-header">
+    <span class="ped-title">Edit Option Premiums</span>
+    <span class="live-badge" id="liveBadge" style="display:none">update anytime</span>
   </div>
-  <div class="cg">
-    <label>Option type</label>
-    <div class="pill-row" id="typePills"></div>
-  </div>
-  <div class="cg">
-    <label>Strike</label>
-    <select id="strikeSelect"></select>
-  </div>
-  <div class="cg" style="justify-content:flex-end">
-    <label style="opacity:0">.</label>
-    <span class="prem-tag" id="premTag">premium —</span>
-  </div>
+  <div class="ped-cols" id="pedCols"></div>
 </div>
 
+<!-- Investment slider -->
+<div class="inv-card">
+  <div class="inv-top">
+    <div class="inv-amount-block">
+      <span class="inv-label-small">Investment</span>
+      <span class="inv-amount" id="invDisplay">$1,000</span>
+    </div>
+    <div class="inv-expiry-block">
+      <span class="inv-expiry-label">Expiration</span>
+      <div class="inv-expiry-pills" id="invExpiryPills"></div>
+    </div>
+  </div>
+  <div class="slider-wrap">
+    <input type="range" id="invSlider" min="500" max="25000" step="500" value="1000" oninput="onSlider(this)" />
+  </div>
+  <div class="quick-btns" id="quickBtns"></div>
+</div>
+
+<!-- Results table -->
 <div class="tbl-wrap">
   <table>
     <thead>
       <tr>
         <th style="width:130px;text-align:left">Scenario</th>
-        <th style="width:44px">Prob</th>
-        <th style="width:80px">Target</th>
-        <th style="width:72px">Move</th>
-        <th style="width:90px">Option P&L</th>
-        <th style="width:80px">Return</th>
-        <th style="width:95px">Wtd contrib</th>
+        <th style="width:42px">Prob</th>
+        <th style="width:76px">Target</th>
+        <th style="width:66px">Move</th>
+        <th style="width:60px">Contracts</th>
+        <th style="width:90px">P&L ($)</th>
+        <th style="width:76px">Return</th>
+        <th style="width:88px">Wtd contrib</th>
       </tr>
     </thead>
     <tbody id="tBody"></tbody>
@@ -177,24 +222,21 @@ tfoot td:first-child { text-align: left; }
   </table>
 </div>
 
+<!-- Chart -->
 <div class="chart-section">
-  <div class="section-label">PW expected P&L by strike — <span id="chartLabel">calls</span></div>
+  <div class="section-label">PW expected P&L by strike — <span id="chartLabel">calls · Apr 10</span></div>
   <div class="legend">
-    <div class="legend-item"><div class="lswatch" style="background:#34c77b"></div>Positive EV</div>
-    <div class="legend-item"><div class="lswatch" style="background:#f0624a"></div>Negative EV</div>
-    <div class="legend-item"><div class="lswatch line" style="background:#4c8bf5"></div>Bull scenario ($16 target)</div>
+    <div class="legend-item"><div class="lswatch" style="background:#16a34a"></div>Positive EV</div>
+    <div class="legend-item"><div class="lswatch" style="background:#dc2626"></div>Negative EV</div>
+    <div class="legend-item"><div class="lswatch line" style="background:#2563eb"></div>Bull scenario ($16 target)</div>
   </div>
   <div class="chart-wrap"><canvas id="barChart"></canvas></div>
 </div>
 
 <div class="note" id="bottomNote"></div>
+<div class="footer">Scenarios from AP Biotech Catalyst Research. Premiums: Tradier live mid when available, Black-Scholes ~180% IV as fallback. Not investment advice. PDUFA April 10, 2026.</div>
 
-<div class="footer">
-  Scenarios from AP Biotech Catalyst Research. Premiums: Tradier live mid when available, Black-Scholes ~180% IV as fallback.
-  Not investment advice. PDUFA April 10, 2026 — IV crush will be severe post-decision.
-</div>
-
-</div>
+</div><!-- /page -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
@@ -212,87 +254,35 @@ const EXPIRIES = [
   { label:"Apr 10", date:"2026-04-10", dte:4 },
   { label:"Apr 17", date:"2026-04-17", dte:11 },
 ];
+const QUICK_VALS = [1000, 2500, 5000, 10000, 25000];
+const SLIDER_MIN = 500, SLIDER_MAX = 25000;
 
-let selExp = 0, selType = "call", selStrike = 10;
-let livePrems = {};
+// State
+let selExp = 0;
+let selType = "call";
+let selStrike = 10;
+let investment = 1000;
+let livePrems = {};  // key: "Apr 10|10|call" => midpoint
+let userPrems = {};  // key: same => user-edited override
 let chart = null;
 
-function normCDF(x) {
-  const t = 1/(1+0.2316419*Math.abs(x));
-  const p = 1-0.3989422*Math.exp(-x*x/2)*(0.319381530*t-0.356563782*t*t+1.781477937*t*t*t-1.821255978*t*t*t*t+1.330274429*t*t*t*t*t);
-  return x>=0?p:1-p;
-}
-function bsCall(S,K,T,r,v){ if(T<=0)return Math.max(S-K,0); const d1=(Math.log(S/K)+(r+.5*v*v)*T)/(v*Math.sqrt(T)),d2=d1-v*Math.sqrt(T); return S*normCDF(d1)-K*Math.exp(-r*T)*normCDF(d2); }
-function bsPut(S,K,T,r,v){ if(T<=0)return Math.max(K-S,0); const d1=(Math.log(S/K)+(r+.5*v*v)*T)/(v*Math.sqrt(T)),d2=d1-v*Math.sqrt(T); return K*Math.exp(-r*T)*normCDF(-d2)-S*normCDF(-d1); }
+// --- Black-Scholes ---
+function normCDF(x){const t=1/(1+0.2316419*Math.abs(x));const p=1-0.3989422*Math.exp(-x*x/2)*(0.319381530*t-0.356563782*t*t+1.781477937*t*t*t-1.821255978*t*t*t*t+1.330274429*t*t*t*t*t);return x>=0?p:1-p;}
+function bsCall(S,K,T,r,v){if(T<=0)return Math.max(S-K,0);const d1=(Math.log(S/K)+(r+.5*v*v)*T)/(v*Math.sqrt(T)),d2=d1-v*Math.sqrt(T);return S*normCDF(d1)-K*Math.exp(-r*T)*normCDF(d2);}
+function bsPut(S,K,T,r,v){if(T<=0)return Math.max(K-S,0);const d1=(Math.log(S/K)+(r+.5*v*v)*T)/(v*Math.sqrt(T)),d2=d1-v*Math.sqrt(T);return K*Math.exp(-r*T)*normCDF(-d2)-S*normCDF(-d1);}
+const IV=1.80, RF=0.05;
+function bsPrem(k,dte,type){const T=dte/365;return type==="call"?bsCall(SPOT,k,T,RF,IV):bsPut(SPOT,k,T,RF,IV);}
 
-const IV=1.80, R=0.05;
-function bsPrem(k,dte,type){ const T=dte/365; return type==="call"?bsCall(SPOT,k,T,R,IV):bsPut(SPOT,k,T,R,IV); }
-function getPrem(k,expLabel,type){ const key=`${expLabel}|${k}|${type}`; if(livePrems[key]!==undefined)return{val:livePrems[key],live:true}; return{val:bsPrem(k,EXPIRIES.find(e=>e.label===expLabel).dte,type),live:false}; }
-function payoff(stock,k,type,prem){ return(type==="call"?Math.max(stock-k,0):Math.max(k-stock,0))-prem; }
-
-function render(){
-  const expLabel=EXPIRIES[selExp].label;
-  const{val:prem,live}=getPrem(selStrike,expLabel,selType);
-  const pt=document.getElementById("premTag");
-  pt.textContent=`$${prem.toFixed(2)} premium${live?" (live mid)":" (est.)"}`;
-  pt.className="prem-tag"+(live?" live":"");
-
-  const tb=document.getElementById("tBody"),tf=document.getElementById("tFoot");
-  tb.innerHTML="";
-  let evPnL=0,evContrib=0;
-
-  SCENARIOS.forEach(sc=>{
-    const pnl=payoff(sc.target,selStrike,selType,prem);
-    const ret=prem>0?(pnl/prem)*100:0;
-    const contrib=pnl*sc.prob;
-    evPnL+=pnl*sc.prob; evContrib+=contrib;
-    const tr=document.createElement("tr");
-    tr.className=sc.bull?"bull":"bear";
-    const ab=sc.anchor?'<span class="badge-anchor">anchor</span>':"";
-    const pc=v=>v>=0?"pos":"neg";
-    tr.innerHTML=`<td>${sc.name}${ab}</td><td class="muted">${(sc.prob*100).toFixed(0)}%</td><td>$${sc.target.toFixed(2)}</td><td class="${sc.bull?"pos":"neg"}">${sc.move}</td><td class="${pc(pnl)}">${pnl>=0?"+":""}$${pnl.toFixed(2)}</td><td class="${pc(ret)}">${ret>=0?"+":""}${ret.toFixed(0)}%</td><td class="${pc(contrib)}">${contrib>=0?"+":""}$${contrib.toFixed(2)}</td>`;
-    tb.appendChild(tr);
-  });
-
-  const evRet=prem>0?(evPnL/prem)*100:0;
-  tf.innerHTML=`<tr><td colspan="3">Probability-weighted EV</td><td></td><td class="${evPnL>=0?"pos":"neg"}">${evPnL>=0?"+":""}$${evPnL.toFixed(2)}</td><td class="${evRet>=0?"pos":"neg"}">${evRet>=0?"+":""}${evRet.toFixed(0)}%</td><td class="${evContrib>=0?"pos":"neg"}">${evContrib>=0?"+":""}$${evContrib.toFixed(2)}</td></tr>`;
-
-  const bullPnl=payoff(16,selStrike,selType,prem);
-  const bullRet=prem>0?(bullPnl/prem)*100:0;
-  document.getElementById("bottomNote").innerHTML=`<strong>${expLabel} $${selStrike} ${selType}</strong> — premium $${prem.toFixed(2)} ${live?"(Tradier live mid)":"(Black-Scholes est., ~180% IV)"}. Anchor scenario (accelerated approval, 45% prob, $16 target): <strong class="${bullPnl>=0?"pos":"neg"}">${bullRet>=0?"+":""}${bullRet.toFixed(0)}% return</strong> = ${bullPnl>=0?"+":""}$${bullPnl.toFixed(2)} per share. Probability-weighted EV across all six scenarios: <strong class="${evPnL>=0?"pos":"neg"}">${evRet>=0?"+":""}${evRet.toFixed(0)}%</strong>. IV crush will be severe post-PDUFA regardless of outcome — Apr 10 contracts expire the same day as the FDA decision.`;
-
-  renderChart();
+function getPrem(k, expLabel, type){
+  const key=`${expLabel}|${k}|${type}`;
+  if(userPrems[key]!==undefined) return {val:userPrems[key], src:"user"};
+  if(livePrems[key]!==undefined) return {val:livePrems[key], src:"live"};
+  return {val:bsPrem(k, EXPIRIES.find(e=>e.label===expLabel).dte, type), src:"bs"};
 }
 
-function renderChart(){
-  const expLabel=EXPIRIES[selExp].label;
-  document.getElementById("chartLabel").textContent=`${expLabel} ${selType}s`;
-  const evArr=[],bullArr=[],colors=[];
-  STRIKES.forEach(k=>{
-    const{val:p}=getPrem(k,expLabel,selType);
-    let ev=0; SCENARIOS.forEach(sc=>{ev+=payoff(sc.target,k,selType,p)*sc.prob;});
-    evArr.push(parseFloat(ev.toFixed(2)));
-    bullArr.push(parseFloat(payoff(16,k,selType,p).toFixed(2)));
-    colors.push(ev>=0?"#34c77b":"#f0624a");
-  });
-  if(chart)chart.destroy();
-  chart=new Chart(document.getElementById("barChart"),{
-    type:"bar",
-    data:{labels:STRIKES.map(k=>`$${k}`),datasets:[
-      {label:"PW EV P&L",data:evArr,backgroundColor:colors,borderRadius:4,order:1},
-      {label:"Bull ($16)",data:bullArr,type:"line",borderColor:"#4c8bf5",backgroundColor:"transparent",borderWidth:2,pointRadius:4,pointBackgroundColor:"#4c8bf5",tension:0.3,order:0}
-    ]},
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y>=0?"+":""}$${ctx.parsed.y.toFixed(2)}`}}},
-      scales:{
-        x:{grid:{display:false},ticks:{color:"#5a6278",font:{size:12}}},
-        y:{grid:{color:"rgba(0,0,0,0.06)"},ticks:{color:"#5a6278",font:{size:11},callback:v=>(v>=0?"+":"")+"$"+v.toFixed(2)}}
-      }
-    }
-  });
-}
+function payoff(stock,k,type,prem){return(type==="call"?Math.max(stock-k,0):Math.max(k-stock,0))-prem;}
 
+// --- Build scenario grid ---
 function buildScGrid(){
   const g=document.getElementById("scGrid"); g.innerHTML="";
   SCENARIOS.forEach(sc=>{
@@ -303,39 +293,178 @@ function buildScGrid(){
   });
 }
 
-function buildExpiry(){
-  const pg=document.getElementById("expiryPills"); pg.innerHTML="";
+// --- Build premium editor ---
+function buildPedCols(){
+  const container=document.getElementById("pedCols"); container.innerHTML="";
+  EXPIRIES.forEach(exp=>{
+    const col=document.createElement("div");
+    col.innerHTML=`<div class="ped-col-title">${exp.label} Expiry</div>`;
+    STRIKES.forEach(k=>{
+      const {val, src}=getPrem(k, exp.label, selType);
+      const key=`${exp.label}|${k}|${selType}`;
+      const row=document.createElement("div"); row.className="ped-row";
+      row.innerHTML=`<span class="ped-label">$${k}${selType==="call"?"C":"P"}</span><input class="ped-input" id="ped_${key.replace(/[|.]/g,'_')}" type="number" step="0.05" min="0" value="${val.toFixed(2)}" />`;
+      col.appendChild(row);
+    });
+    container.appendChild(col);
+  });
+  // Attach change listeners
+  EXPIRIES.forEach(exp=>{
+    STRIKES.forEach(k=>{
+      const key=`${exp.label}|${k}|${selType}`;
+      const el=document.getElementById(`ped_${key.replace(/[|.]/g,'_')}`);
+      if(el){
+        el.addEventListener("change",()=>{
+          const v=parseFloat(el.value);
+          if(!isNaN(v) && v>=0){
+            userPrems[key]=parseFloat(v.toFixed(2));
+            el.classList.add("updated");
+            setTimeout(()=>el.classList.remove("updated"),700);
+            render();
+          }
+        });
+      }
+    });
+  });
+}
+
+// Sync premium editor values after live fetch
+function syncPedInputs(){
+  EXPIRIES.forEach(exp=>{
+    STRIKES.forEach(k=>{
+      const key=`${exp.label}|${k}|${selType}`;
+      const safeKey=key.replace(/[|.]/g,'_');
+      const el=document.getElementById(`ped_${safeKey}`);
+      if(el && userPrems[key]===undefined){
+        const {val}=getPrem(k,exp.label,selType);
+        el.value=val.toFixed(2);
+        el.classList.add("updated");
+        setTimeout(()=>el.classList.remove("updated"),700);
+      }
+    });
+  });
+}
+
+// --- Investment slider ---
+function buildSlider(){
+  // Expiry pills inside the slider card
+  const ep=document.getElementById("invExpiryPills"); ep.innerHTML="";
   EXPIRIES.forEach((e,i)=>{
     const b=document.createElement("button");
-    b.className="pill"+(i===selExp?" on":"");
+    b.className="inv-pill"+(i===selExp?" on":"");
     b.textContent=e.label;
-    b.onclick=()=>{selExp=i;pg.querySelectorAll(".pill").forEach((p,j)=>p.classList.toggle("on",j===i));render();};
-    pg.appendChild(b);
+    b.onclick=()=>{
+      selExp=i;
+      ep.querySelectorAll(".inv-pill").forEach((p,j)=>p.classList.toggle("on",j===i));
+      buildPedCols();
+      render();
+    };
+    ep.appendChild(b);
   });
-}
-
-function buildType(){
-  const pg=document.getElementById("typePills"); pg.innerHTML="";
-  ["call","put"].forEach(t=>{
+  // Quick buttons
+  const qb=document.getElementById("quickBtns"); qb.innerHTML="";
+  QUICK_VALS.forEach(v=>{
     const b=document.createElement("button");
-    b.className="pill"+(t===selType?" on":"");
-    b.textContent=t;
-    b.onclick=()=>{selType=t;pg.querySelectorAll(".pill").forEach(p=>p.classList.toggle("on",p.textContent===t));render();};
-    pg.appendChild(b);
+    b.className="qbtn"+(v===investment?" on":"");
+    b.textContent=`${v>=1000?v/1000+"K":v}`;
+    if(v===investment)b.classList.add("on");
+    b.onclick=()=>{investment=v;updateSliderUI();render();};
+    qb.appendChild(b);
+  });
+  updateSliderUI();
+}
+
+function updateSliderUI(){
+  const sl=document.getElementById("invSlider");
+  sl.value=investment;
+  const pct=((investment-SLIDER_MIN)/(SLIDER_MAX-SLIDER_MIN))*100;
+  sl.style.setProperty("--pct",pct+"%");
+  document.getElementById("invDisplay").textContent="$"+investment.toLocaleString();
+  document.querySelectorAll(".qbtn").forEach(b=>{
+    const v=parseInt(b.textContent.replace("K",""))*( b.textContent.includes("K")?1000:1);
+    b.classList.toggle("on",v===investment);
   });
 }
 
-function buildStrike(){
-  const s=document.getElementById("strikeSelect"); s.innerHTML="";
+function onSlider(el){
+  investment=parseInt(el.value);
+  updateSliderUI();
+  render();
+}
+
+// --- Main render ---
+function render(){
+  const expLabel=EXPIRIES[selExp].label;
+  const{val:prem, src}=getPrem(selStrike, expLabel, selType);
+  const contracts=Math.floor(investment/(prem*100));
+
+  const tb=document.getElementById("tBody"), tf=document.getElementById("tFoot");
+  tb.innerHTML="";
+  let evPnL=0, evContrib=0;
+
+  SCENARIOS.forEach(sc=>{
+    const pnlPerShare=payoff(sc.target,selStrike,selType,prem);
+    const totalPnL=pnlPerShare*100*contracts;
+    const ret=prem>0?(pnlPerShare/prem)*100:0;
+    const contrib=totalPnL*sc.prob;
+    evPnL+=totalPnL*sc.prob; evContrib+=contrib;
+    const tr=document.createElement("tr");
+    tr.className=sc.bull?"bull":"bear";
+    const ab=sc.anchor?'<span class="badge-anchor">anchor</span>':"";
+    const pc=v=>v>=0?"pos":"neg";
+    const fmtDollar=v=>(v>=0?"+$":"-$")+Math.abs(v).toLocaleString(undefined,{maximumFractionDigits:0});
+    tr.innerHTML=`<td>${sc.name}${ab}</td><td class="muted">${(sc.prob*100).toFixed(0)}%</td><td>$${sc.target.toFixed(2)}</td><td class="${sc.bull?"pos":"neg"}">${sc.move}</td><td class="muted">${contracts}</td><td class="${pc(totalPnL)}">${fmtDollar(totalPnL)}</td><td class="${pc(ret)}">${ret>=0?"+":""}${ret.toFixed(0)}%</td><td class="${pc(contrib)}">${fmtDollar(contrib)}</td>`;
+    tb.appendChild(tr);
+  });
+
+  const evRet=prem>0?(evPnL/(investment)||0)*100:0;
+  const fmtDollar=v=>(v>=0?"+$":"-$")+Math.abs(v).toLocaleString(undefined,{maximumFractionDigits:0});
+  tf.innerHTML=`<tr><td colspan="4">Probability-weighted EV — ${contracts} contract${contracts!==1?"s":""} @ $${prem.toFixed(2)} ${src==="live"?"(live)":src==="user"?"(edited)":"(est.)"}</td><td class="muted">${contracts}</td><td class="${evPnL>=0?"pos":"neg"}">${fmtDollar(evPnL)}</td><td class="${evRet>=0?"pos":"neg"}">${evRet>=0?"+":""}${evRet.toFixed(0)}%</td><td class="${evContrib>=0?"pos":"neg"}">${fmtDollar(evContrib)}</td></tr>`;
+
+  // Bottom note
+  const bullPnl=payoff(16,selStrike,selType,prem)*100*contracts;
+  const bullRet=prem>0?((payoff(16,selStrike,selType,prem)/prem)*100):0;
+  document.getElementById("bottomNote").innerHTML=
+    `<strong>${expLabel} $${selStrike} ${selType.toUpperCase()}</strong> — $${investment.toLocaleString()} buys <strong>${contracts} contract${contracts!==1?"s":""}</strong> at $${prem.toFixed(2)} premium ${src==="live"?"(Tradier live mid)":src==="user"?"(manually edited)":"(Black-Scholes est., ~180% IV)"}. `+
+    `Anchor scenario (accel. approval, 45% prob, $16 target): <strong class="${bullPnl>=0?"pos":"neg"}">${bullRet>=0?"+":""}${bullRet.toFixed(0)}% return = ${fmtDollar(bullPnl)}</strong>. `+
+    `Probability-weighted EV on full position: <strong class="${evPnL>=0?"pos":"neg"}">${fmtDollar(evPnL)}</strong>. `+
+    `IV crush post-PDUFA will be severe — sell within 1–2 sessions of the decision.`;
+
+  renderChart();
+}
+
+function renderChart(){
+  const expLabel=EXPIRIES[selExp].label;
+  document.getElementById("chartLabel").textContent=`${selType}s · ${expLabel}`;
+  const evArr=[],bullArr=[],colors=[];
   STRIKES.forEach(k=>{
-    const o=document.createElement("option");
-    o.value=k; o.textContent=`$${k} (${k<=SPOT?"ITM":"OTM"})`;
-    if(k===selStrike)o.selected=true;
-    s.appendChild(o);
+    const{val:p}=getPrem(k,expLabel,selType);
+    const cts=Math.floor(investment/(p*100));
+    let ev=0;
+    SCENARIOS.forEach(sc=>{ev+=payoff(sc.target,k,selType,p)*100*cts*sc.prob;});
+    evArr.push(Math.round(ev));
+    bullArr.push(Math.round(payoff(16,k,selType,p)*100*cts));
+    colors.push(ev>=0?"#16a34a":"#dc2626");
   });
-  s.onchange=()=>{selStrike=parseInt(s.value);render();};
+  if(chart)chart.destroy();
+  chart=new Chart(document.getElementById("barChart"),{
+    type:"bar",
+    data:{labels:STRIKES.map(k=>`$${k}`),datasets:[
+      {label:"PW EV P&L ($)",data:evArr,backgroundColor:colors,borderRadius:4,order:1},
+      {label:"Bull ($16)",data:bullArr,type:"line",borderColor:"#2563eb",backgroundColor:"transparent",borderWidth:2,pointRadius:4,pointBackgroundColor:"#2563eb",tension:0.3,order:0}
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const v=ctx.parsed.y;return `${ctx.dataset.label}: ${v>=0?"+$":"-$"}${Math.abs(v).toLocaleString()}`;}}}},
+      scales:{
+        x:{grid:{display:false},ticks:{color:"#9099b0",font:{size:12}}},
+        y:{grid:{color:"rgba(0,0,0,0.05)"},ticks:{color:"#9099b0",font:{size:11},callback:v=>(v>=0?"+$":"-$")+Math.abs(v/1000).toFixed(0)+"k"}}
+      }
+    }
+  });
 }
 
+// --- Tradier fetch ---
 async function fetchChain(){
   const token=document.getElementById("tradierKey").value.trim();
   const btn=document.getElementById("fetchBtn");
@@ -364,22 +493,38 @@ async function fetchChain(){
         });
       });
     }catch(e){
-      if(e.message==="invalid_token"){status.textContent="Invalid token — check Tradier API Access";status.className="fetch-status err";btn.disabled=false;btn.textContent="↻ Fetch chain";return;}
+      if(e.message==="invalid_token"){
+        status.textContent="Invalid token — check Tradier API Access";
+        status.className="fetch-status err";
+        btn.disabled=false; btn.textContent="↻ Fetch Live Chain";
+        return;
+      }
       errors++;
     }
   }
-  btn.disabled=false; btn.textContent="↻ Fetch chain";
+  btn.disabled=false; btn.textContent="↻ Fetch Live Chain";
   const ts=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
-  if(updated>0){status.textContent=`${updated} quotes loaded — ${ts}`;status.className="fetch-status ok";}
-  else{status.textContent=errors>0?"Chain unavailable — using BS estimates":"No matching strikes found";status.className="fetch-status err";}
-  render();
+  if(updated>0){
+    status.innerHTML=`&#10003; ${updated} strikes updated (midpoints) &middot; ${ts}`;
+    status.className="fetch-status ok";
+    document.getElementById("liveBadge").style.display="inline";
+    syncPedInputs();
+    render();
+  } else {
+    status.textContent=errors>0?"Chain unavailable — using BS estimates":"No matching strikes found";
+    status.className="fetch-status err";
+  }
 }
 
+// --- Init ---
 window.addEventListener("load",()=>{
   const saved=localStorage.getItem("tradierKey");
-  if(saved)document.getElementById("tradierKey").value=saved;
-  buildScGrid(); buildExpiry(); buildType(); buildStrike(); render();
-  if(saved)fetchChain();
+  if(saved) document.getElementById("tradierKey").value=saved;
+  buildScGrid();
+  buildPedCols();
+  buildSlider();
+  render();
+  if(saved) fetchChain();
 });
 </script>
 </body>
